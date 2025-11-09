@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiviel Modal - Demostración Mejorada</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Kiviel Modal CSS -->
+    <link rel="stylesheet" href="css/kiviel-modal.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+        }
+
+        .demo-section h2 {
+            color: #3a7abf;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .modal-content-example {
+            line-height: 1.6;
+        }
+
+        .modal-content-example h3 {
+            color: #3a7abf;
+            margin-top: 0;
+        }
+
+        .modal-content-example p {
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            z-index: 10000;
+        }
+
+        .counter span {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .copyright {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="counter">
+        Modales abiertos: <span id="modal-counter">0</span>
+    </div>
+
+    <div class="container">
+        <h1>🎨 Kiviel Modal - Plugin Mejorado</h1>
+        <p class="subtitle">Demostración de todas las funcionalidades con soporte para múltiples modales</p>
+
+        <div class="demo-section">
+            <h2>📏 Diferentes Tamaños</h2>
+            <div class="button-grid">
+                <button class="btn btn-primary" onclick="openModalXS()">Extra Pequeño (XS)</button>
+                <button class="btn btn-primary" onclick="openModalSM()">Pequeño (SM)</button>
+                <button class="btn btn-primary" onclick="openModalMD()">Mediano (MD)</button>
+                <button class="btn btn-primary" onclick="openModalLG()">Grande (LG)</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔄 Múltiples Modales</h2>
+            <div class="button-grid">
+                <button class="btn btn-success" onclick="openNestedModal()">Modal con Botón para Abrir Otro</button>
+                <button class="btn btn-success" onclick="openMultiple()">Abrir 2 Modales Seguidos</button>
+                <button class="btn btn-warning" onclick="closeAll()">Cerrar Todos los Modales</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📝 Contenido Variado</h2>
+            <div class="button-grid">
+                <button class="btn btn-info" onclick="openFormModal()">Modal con Formulario</button>
+                <button class="btn btn-info" onclick="openLongContentModal()">Modal con Contenido Largo</button>
+                <button class="btn btn-info" onclick="openImageModal()">Modal con Imagen</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔔 Compatibilidad con Otros Plugins</h2>
+            <div class="button-grid">
+                <button class="btn btn-warning" onclick="openModalWithSweetAlert()">Modal + SweetAlert2</button>
+                <button class="btn btn-warning" onclick="testZIndexCompatibility()">Probar Z-Index</button>
+                <button class="btn btn-info" onclick="testMultipleOpenClose()">Test: Abrir/Cerrar Múltiples</button>
+                <button class="btn btn-info" onclick="debugZIndex()">🐛 Debug Z-Index</button>
+            </div>
+            <div class="info-box">
+                <strong>Nota:</strong> El z-index de Kiviel Modal se calcula basado en el número de modales <strong>actualmente abiertos</strong>, no en un contador incremental. Esto garantiza que el z-index nunca supere 1055, permitiendo que SweetAlert2 (z-index 1060+) siempre se muestre por encima.
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>ℹ️ Información</h2>
+            <div class="info-box">
+                <strong>Características principales:</strong>
+                <ul>
+                    <li>✅ Soporte para múltiples modales simultáneos</li>
+                    <li>✅ Gestión automática de z-index</li>
+                    <li>✅ Cerrar con tecla ESC (cierra el último modal abierto)</li>
+                    <li>✅ Cerrar al hacer clic fuera del modal</li>
+                    <li>✅ Diseño responsive para todos los dispositivos</li>
+                    <li>✅ Scroll solo cuando es necesario</li>
+                    <li>✅ Animaciones suaves</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer">
+            <p class="copyright">&copy; 2025 Tecniviel. Todos los derechos reservados.</p>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- SweetAlert2 para demostración de compatibilidad -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Kiviel Modal Plugin -->
+    <script src="js/jquery-kiviel-modal.js"></script>
+
+    <script>
+        // Actualizar contador de modales
+        function updateCounter() {
+            $('#modal-counter').text($.kivielModal.count());
+        }
+
+        // Actualizar contador cada 100ms
+        setInterval(updateCounter, 100);
+
+        // Funciones de demostración
+        function openModalXS() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal Extra Pequeño</h3>
+                    <p>Este es un modal de tamaño XS, ideal para confirmaciones rápidas o mensajes cortos.</p>
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Cerrar</button>
+                </div>
+            `, 'xs');
+        }
+
+        function openModalSM() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal Pequeño</h3>
+                    <p>Este es un modal de tamaño SM, perfecto para formularios sencillos o información breve.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Entendido</button>
+                </div>
+            `, 'sm');
+        }
+
+        function openModalMD() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal Mediano</h3>
+                    <p>Este es un modal de tamaño MD, adecuado para contenido más extenso.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Aceptar</button>
+                </div>
+            `, 'md');
+        }
+
+        function openModalLG() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal Grande</h3>
+                    <p>Este es un modal de tamaño LG, ideal para contenido extenso, tablas o dashboards.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Cerrar</button>
+                </div>
+            `, 'lg');
+        }
+
+        function openNestedModal() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal Principal</h3>
+                    <p>Este modal contiene un botón que abre otro modal. Esto es útil para flujos de trabajo complejos.</p>
+                    <button class="btn btn-success" onclick="openSecondaryModal()">Abrir Segundo Modal</button>
+                    <button class="btn btn-warning" onclick="$.kivielModal.close()">Cerrar Este Modal</button>
+                </div>
+            `, 'md');
+        }
+
+        function openSecondaryModal() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal Secundario</h3>
+                    <p>Este es el segundo modal. Observa cómo se superpone sobre el primero con un z-index superior.</p>
+                    <p>Puedes cerrar este modal y el anterior seguirá abierto.</p>
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Cerrar Solo Este</button>
+                </div>
+            `, 'sm');
+        }
+
+        function openMultiple() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Primer Modal</h3>
+                    <p>Este es el primer modal abierto automáticamente.</p>
+                </div>
+            `, 'md');
+
+            setTimeout(() => {
+                $.kivielModal(`
+                    <div class="modal-content-example">
+                        <h3>Segundo Modal</h3>
+                        <p>Este es el segundo modal, abierto automáticamente después del primero.</p>
+                        <p>Presiona ESC para cerrar este modal, o cierra ambos con el botón de abajo.</p>
+                    </div>
+                `, 'sm');
+            }, 500);
+        }
+
+        function closeAll() {
+            $.kivielModal.closeAll();
+        }
+
+        function openFormModal() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Formulario de Contacto</h3>
+                    <form onsubmit="submitForm(event)">
+                        <div class="form-group">
+                            <label for="name">Nombre:</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje:</label>
+                            <textarea id="message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Enviar</button>
+                        <button type="button" class="btn btn-warning" onclick="$.kivielModal.close()">Cancelar</button>
+                    </form>
+                </div>
+            `, 'md');
+        }
+
+        function submitForm(e) {
+            e.preventDefault();
+            alert('Formulario enviado (simulado)');
+            $.kivielModal.close();
+        }
+
+        function openLongContentModal() {
+            const longContent = `
+                <div class="modal-content-example">
+                    <h3>Contenido Largo con Scroll</h3>
+                    <p>Este modal demuestra cómo funciona el scroll cuando el contenido es más largo que el espacio disponible.</p>
+                    ${Array(20).fill().map((_, i) => `
+                        <p><strong>Párrafo ${i + 1}:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    `).join('')}
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Cerrar</button>
+                </div>
+            `;
+            $.kivielModal(longContent, 'md');
+        }
+
+        function openImageModal() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal con Imagen</h3>
+                    <p>Las imágenes se ajustan automáticamente al ancho del modal.</p>
+                    <img src="https://picsum.photos/800/600" alt="Imagen de ejemplo" style="width: 100%; border-radius: 8px; margin: 15px 0;">
+                    <p>El contenido siempre se mantiene dentro del contenedor.</p>
+                    <button class="btn btn-primary" onclick="$.kivielModal.close()">Cerrar</button>
+                </div>
+            `, 'lg');
+        }
+
+        // Funciones de compatibilidad con SweetAlert2
+        function openModalWithSweetAlert() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal con SweetAlert2</h3>
+                    <p>Este modal demuestra la compatibilidad con SweetAlert2. El z-index de Kiviel Modal (1040) es menor que el de SweetAlert2 (1060+).</p>
+                    <p>Haz clic en los botones para probar diferentes alertas:</p>
+                    <button class="btn btn-success" onclick="showSuccessAlert()">Alerta de Éxito</button>
+                    <button class="btn btn-info" onclick="showInfoAlert()">Alerta de Información</button>
+                    <button class="btn btn-warning" onclick="showConfirmAlert()">Alerta de Confirmación</button>
+                    <p style="margin-top: 15px;"><small>Las alertas se mostrarán por encima de este modal correctamente.</small></p>
+                </div>
+            `, 'md');
+        }
+
+        function showSuccessAlert() {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: 'Esta alerta de SweetAlert2 se muestra correctamente por encima del modal Kiviel.',
+                confirmButtonText: 'Entendido'
+            });
+        }
+
+        function showInfoAlert() {
+            Swal.fire({
+                icon: 'info',
+                title: 'Información',
+                text: 'El z-index de Kiviel Modal es 1040, y el de SweetAlert2 es 1060+. Esto garantiza la compatibilidad.',
+                confirmButtonText: 'Ok'
+            });
+        }
+
+        function showConfirmAlert() {
+            Swal.fire({
+                icon: 'question',
+                title: '¿Estás seguro?',
+                text: 'Esta es una alerta de confirmación que se muestra sobre el modal.',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, continuar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Confirmado', 'Has confirmado la acción', 'success');
+                }
+            });
+        }
+
+        function testZIndexCompatibility() {
+            // Abrir dos modales Kiviel
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal 1 (z-index: 1040)</h3>
+                    <p>Este es el primer modal Kiviel con z-index 1040.</p>
+                    <button class="btn btn-primary" onclick="openSecondForZTest()">Abrir Modal 2</button>
+                </div>
+            `, 'sm');
+        }
+
+        function openSecondForZTest() {
+            $.kivielModal(`
+                <div class="modal-content-example">
+                    <h3>Modal 2 (z-index: 1045)</h3>
+                    <p>Este es el segundo modal Kiviel con z-index 1045.</p>
+                    <button class="btn btn-warning" onclick="testSweetAlertAbove()">Probar SweetAlert</button>
+                    <p style="margin-top: 10px;"><small>El segundo modal se muestra sobre el primero correctamente.</small></p>
+                </div>
+            `, 'sm');
+        }
+
+        function testSweetAlertAbove() {
+            Swal.fire({
+                icon: 'success',
+                title: 'SweetAlert2 (z-index: 1060+)',
+                html: 'Esta alerta tiene un z-index superior (1060+) y se muestra correctamente <strong>por encima de ambos modales Kiviel</strong>.',
+                confirmButtonText: 'Perfecto',
+                footer: 'Los z-index están correctamente configurados'
+            });
+        }
+
+        // Test de abrir y cerrar múltiples modales
+        function testMultipleOpenClose() {
+            Swal.fire({
+                title: 'Test de Z-Index Dinámico',
+                html: `
+                    <p>Este test demuestra que el z-index se basa en modales ACTIVOS, no en un contador infinito.</p>
+                    <p><strong>Pasos del test:</strong></p>
+                    <ol style="text-align: left; padding-left: 20px;">
+                        <li>Abriremos 3 modales (z-index: 1040, 1045, 1050)</li>
+                        <li>Cerraremos todos</li>
+                        <li>Abriremos 2 nuevos modales</li>
+                        <li>El z-index se REINICIA a 1040, 1045</li>
+                        <li>Mostraremos SweetAlert que SIEMPRE estará encima</li>
+                    </ol>
+                `,
+                icon: 'info',
+                confirmButtonText: 'Iniciar Test',
+                showCancelButton: true,
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    runZIndexTest();
+                }
+            });
+        }
+
+        function runZIndexTest() {
+            // Paso 1: Abrir 3 modales
+            Swal.fire({
+                title: 'Paso 1/5',
+                text: 'Abriendo 3 modales...',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            setTimeout(() => {
+                const m1 = $.kivielModal('<div><h3>Modal 1</h3><p>Z-Index: 1040</p></div>', 'xs');
+                
+                setTimeout(() => {
+                    const m2 = $.kivielModal('<div><h3>Modal 2</h3><p>Z-Index: 1045</p></div>', 'xs');
+                    
+                    setTimeout(() => {
+                        const m3 = $.kivielModal('<div><h3>Modal 3</h3><p>Z-Index: 1050</p></div>', 'xs');
+                        
+                        // Paso 2: Mostrar info de z-index
+                        setTimeout(() => {
+                            const info = $.kivielModal.getZIndexInfo();
+                            Swal.fire({
+                                title: 'Paso 2/5',
+                                html: `
+                                    <p>Modales abiertos: ${info.currentModalsCount}</p>
+                                    <p>Próximo z-index: ${info.nextZIndex}</p>
+                                `,
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                            
+                            // Paso 3: Cerrar todos
+                            setTimeout(() => {
+                                Swal.fire({
+                                    title: 'Paso 3/5',
+                                    text: 'Cerrando todos los modales...',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                                
+                                setTimeout(() => {
+                                    $.kivielModal.closeAll();
+                                    
+                                    // Paso 4: Abrir nuevos modales
+                                    setTimeout(() => {
+                                        Swal.fire({
+                                            title: 'Paso 4/5',
+                                            text: 'Abriendo 2 nuevos modales...',
+                                            timer: 2000,
+                                            showConfirmButton: false
+                                        });
+                                        
+                                        setTimeout(() => {
+                                            const m4 = $.kivielModal('<div><h3>Nuevo Modal 1</h3><p>Z-Index: 1040 (REINICIADO)</p></div>', 'xs');
+                                            
+                                            setTimeout(() => {
+                                                const m5 = $.kivielModal('<div><h3>Nuevo Modal 2</h3><p>Z-Index: 1045</p></div>', 'xs');
+                                                
+                                                // Paso 5: Mostrar SweetAlert encima
+                                                setTimeout(() => {
+                                                    const finalInfo = $.kivielModal.getZIndexInfo();
+                                                    Swal.fire({
+                                                        title: 'Paso 5/5 - ¡Éxito!',
+                                                        html: `
+                                                            <p><strong>El z-index se REINICIÓ correctamente</strong></p>
+                                                            <p>Modales activos: ${finalInfo.currentModalsCount}</p>
+                                                            <p>Próximo z-index: ${finalInfo.nextZIndex}</p>
+                                                            <p style="color: green; margin-top: 15px;">
+                                                                ✅ Esta alerta (z-index 1060+) se muestra ENCIMA de los modales
+                                                            </p>
+                                                            <p style="color: green;">
+                                                                ✅ El z-index NUNCA superará 1055
+                                                            </p>
+                                                        `,
+                                                        icon: 'success',
+                                                        confirmButtonText: 'Cerrar Todo'
+                                                    }).then(() => {
+                                                        $.kivielModal.closeAll();
+                                                    });
+                                                }, 2000);
+                                            }, 500);
+                                        }, 2000);
+                                    }, 2500);
+                                }, 2000);
+                            }, 3000);
+                        }, 1000);
+                    }, 500);
+                }, 500);
+            }, 2000);
+        }
+
+        function debugZIndex() {
+            const info = $.kivielModal.getZIndexInfo();
+            console.log('Kiviel Modal Z-Index Info:', info);
+            
+            Swal.fire({
+                title: '🐛 Debug de Z-Index',
+                html: `
+                    <div style="text-align: left; font-family: monospace; font-size: 12px;">
+                        <p><strong>Base Z-Index:</strong> ${info.baseZIndex}</p>
+                        <p><strong>Incremento:</strong> ${info.increment}</p>
+                        <p><strong>Máximo Z-Index:</strong> ${info.maxZIndex}</p>
+                        <p><strong>Modales Activos:</strong> ${info.currentModalsCount}</p>
+                        <p><strong>Próximo Z-Index:</strong> ${info.nextZIndex}</p>
+                        <hr>
+                        <p><strong>Modales Abiertos:</strong></p>
+                        ${info.activeModals.length > 0 ? 
+                            info.activeModals.map(m => `<p>• ${m.id}: z-index ${m.zIndex}</p>`).join('') : 
+                            '<p><em>No hay modales abiertos</em></p>'
+                        }
+                    </div>
+                `,
+                icon: 'info',
+                width: 600,
+                confirmButtonText: 'Ver en Consola'
+            });
+        }
+    </script>
+</body>
+</html>

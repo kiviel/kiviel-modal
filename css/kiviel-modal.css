@@ -1,0 +1,311 @@
+/* Layout del modal */
+.kiviel-modal-layout {
+  display: flex;
+  background-color: rgba(10, 10, 10, 0.5);
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* z-index se establece dinámicamente desde JS (base: 1040, incremento: +5) */
+  /* Esto permite que sweetalert2 (1060+) y otros plugins se muestren encima */
+}
+
+/* Contenedor del modal */
+.kiviel-modal {
+  display: flex;
+  opacity: 0;
+  transform: translateY(-50px) scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  flex-direction: column;
+  position: relative;
+  background: #ffffff;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  width: auto;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+/* Estados de animación */
+.kiviel-modal-show { 
+  opacity: 1 !important; 
+  transform: translateY(0) scale(1) !important;
+}
+
+.kiviel-modal-hide { 
+  opacity: 0 !important; 
+  transform: translateY(-50px) scale(0.95) !important;
+}
+
+/* Tamaños de modal */
+.kiviel-modal-xs {
+  width: 90%;
+  max-width: 400px;
+}
+
+.kiviel-modal-sm {
+  width: 90%;
+  max-width: 600px;
+}
+
+.kiviel-modal-md {
+  width: 90%;
+  max-width: 900px;
+}
+
+.kiviel-modal-lg {
+  width: 90%;
+  max-width: 1200px;
+}
+
+/* Header del modal */
+.kiviel-modal-header {
+  display: flex;
+  flex-direction: row;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  min-height: 50px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #dee2e6;
+  flex-shrink: 0;
+  border-radius: 8px 8px 0 0;
+  box-sizing: border-box;
+}
+
+.kiviel-modal-header .title {
+  color: #3a7abf;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.kiviel-modal-header .title i {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.kiviel-modal-header .close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.kiviel-modal-header .close-button a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.kiviel-modal-header .close-button a:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.kiviel-modal-header .close-button i.fa-times {
+  color: #6c757d;
+  font-size: 18px;
+  transition: color 0.2s ease;
+}
+
+.kiviel-modal-header .close-button a:hover i.fa-times {
+  color: #dc3545;
+}
+
+/* Body del modal */
+.kiviel-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Estilos mejorados del scrollbar */
+.kiviel-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.kiviel-modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.kiviel-modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.kiviel-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Para Firefox */
+.kiviel-modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Contenedor de botones (si se usa) */
+.kiviel-modal-buttons {
+  display: flex;
+  flex-direction: row;
+  background-color: #f8f9fa;
+  min-height: 50px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-top: 1px solid #dee2e6;
+  flex-shrink: 0;
+  gap: 10px;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Responsive - Tablets */
+@media (max-width: 768px) {
+  .kiviel-modal-layout {
+    padding: 15px;
+  }
+
+  .kiviel-modal-xs,
+  .kiviel-modal-sm {
+    width: 95%;
+  }
+
+  .kiviel-modal-md,
+  .kiviel-modal-lg {
+    width: 95%;
+    max-width: none;
+  }
+
+  .kiviel-modal-body {
+    padding: 15px;
+  }
+
+  .kiviel-modal-header .title {
+    font-size: 15px;
+  }
+
+  .kiviel-modal-header .title span {
+    display: none;
+  }
+}
+
+/* Responsive - Móviles */
+@media (max-width: 520px) {
+  .kiviel-modal-layout {
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .kiviel-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 95vh;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+
+  .kiviel-modal-xs,
+  .kiviel-modal-sm,
+  .kiviel-modal-md,
+  .kiviel-modal-lg {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .kiviel-modal-body {
+    padding: 12px;
+  }
+
+  .kiviel-modal-header {
+    min-height: 45px;
+    padding: 8px 12px;
+  }
+
+  .kiviel-modal-header .title {
+    font-size: 14px;
+  }
+
+  .kiviel-modal-header .title i {
+    font-size: 16px;
+  }
+
+  .kiviel-modal-header .close-button a {
+    width: 30px;
+    height: 30px;
+  }
+
+  .kiviel-modal-header .close-button i.fa-times {
+    font-size: 16px;
+  }
+
+  .kiviel-modal-buttons {
+    flex-direction: column;
+    min-height: auto;
+    padding: 8px 10px;
+  }
+}
+
+/* Muy pequeño - máximo aprovechamiento de espacio */
+@media (max-width: 360px) {
+  .kiviel-modal-layout {
+    padding: 5px;
+  }
+
+  .kiviel-modal {
+    max-height: 98vh;
+    border-radius: 4px;
+  }
+
+  .kiviel-modal-body {
+    padding: 10px;
+  }
+
+  .kiviel-modal-header {
+    min-height: 40px;
+  }
+}
+
+/* Asegurar que el contenido no desborde */
+.kiviel-modal-body * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.kiviel-modal-body img {
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.kiviel-modal-body table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Estilos para múltiples modales superpuestos */
+.kiviel-modal-layout + .kiviel-modal-layout {
+  background-color: rgba(10, 10, 10, 0.3);
+}
