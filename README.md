@@ -51,19 +51,37 @@ import './kiviel-modal.css';
 ```
 
 ## 💻 Uso básico
-**Crear un modal simple**
+
+### Sintaxis Simple
 ```Javascript
-const modalId = $.kivielModal("<p>Contenido del modal</p>", "md");
+// Forma básica (usa opciones por defecto)
+const modalId = $.kivielModal("<p>Contenido del modal</p>");
+
+// Con tamaño específico
+const modalId = $.kivielModal("<p>Contenido del modal</p>", "lg");
 ```
 
-**Crear un modal con callback personalizado**
+### Nueva Sintaxis con Opciones (Recomendada)
 ```Javascript
-const modalId = $.kivielModal("<p>Contenido del modal</p>", "md", {
+const modalId = $.kivielModal("<p>Contenido del modal</p>", {
+    size: 'lg',                    // Tamaño del modal
+    closeOnClickOutside: true,     // Cerrar al hacer clic fuera (default: true)
+    closeOnEscape: false,          // Cerrar con tecla ESC (default: false)
     onContentLoaded: function($modalBody, modalId) {
         // Este código se ejecuta después de cargar el contenido
         console.log("Modal cargado:", modalId);
         // Inicializar plugins aquí
         $modalBody.find('.datatable').DataTable();
+    }
+});
+```
+
+### Sintaxis Legacy (Compatible con versiones anteriores)
+```Javascript
+const modalId = $.kivielModal("<p>Contenido del modal</p>", "md", {
+    closeOnEscape: true,
+    onContentLoaded: function($modalBody, modalId) {
+        console.log("Modal cargado:", modalId);
     }
 });
 ```
@@ -100,6 +118,74 @@ console.log("Modales abiertos:", $.kivielModal.count());
 $.kivielModal.updateContent(modalId, "<p>Nuevo contenido</p>", function($modalBody) {
     // Callback opcional después de actualizar
     $modalBody.find('.new-table').DataTable();
+});
+```
+
+**Obtener las opciones de un modal específico**
+```Javascript
+const options = $.kivielModal.getModalOptions(modalId);
+console.log(options);
+// { size: 'lg', closeOnClickOutside: true, closeOnEscape: false, onContentLoaded: null }
+```
+
+---
+
+## ⚙️ Opciones de Configuración
+
+Kiviel Modal ahora soporta un sistema completo de opciones de configuración:
+
+| Opción | Tipo | Default | Descripción |
+|--------|------|---------|-------------|
+| `size` | string | `'sm'` | Tamaño del modal: `'xs'`, `'sm'`, `'md'`, `'lg'` |
+| `closeOnClickOutside` | boolean | `true` | Si es `true`, el modal se cierra al hacer clic fuera del contenido |
+| `closeOnEscape` | boolean | `false` | Si es `true`, el modal se cierra al presionar la tecla ESC |
+| `onContentLoaded` | function | `null` | Callback que se ejecuta después de cargar el contenido del modal |
+
+### Ejemplos de Uso
+
+**Modal que NO se cierra con clic externo:**
+```Javascript
+$.kivielModal("<p>Este modal solo se cierra con el botón X</p>", {
+    size: 'md',
+    closeOnClickOutside: false
+});
+```
+
+**Modal que se cierra con ESC:**
+```Javascript
+$.kivielModal("<p>Presiona ESC para cerrar</p>", {
+    size: 'lg',
+    closeOnEscape: true
+});
+```
+
+**Modal con configuración completa:**
+```Javascript
+$.kivielModal("<p>Modal personalizado</p>", {
+    size: 'md',
+    closeOnClickOutside: false,    // Solo cerrar con botón X o ESC
+    closeOnEscape: true,            // Permitir cerrar con ESC
+    onContentLoaded: function($modalBody, modalId) {
+        console.log("Modal cargado:", modalId);
+        // Inicializar plugins, eventos, etc.
+    }
+});
+```
+
+**Modal para contenido crítico (no se puede cerrar accidentalmente):**
+```Javascript
+$.kivielModal("<p>⚠️ Información importante que requiere confirmación</p>", {
+    size: 'md',
+    closeOnClickOutside: false,    // NO cerrar al hacer clic fuera
+    closeOnEscape: false,          // NO cerrar con ESC
+    onContentLoaded: function($modalBody, modalId) {
+        // Agregar botón personalizado para cerrar
+        $modalBody.append(`
+            <button onclick="$.kivielModal.closeById('${modalId}')">
+                He leído y entiendo
+            </button>
+        `);
+    }
 });
 ```
 
@@ -282,15 +368,18 @@ $(function(){
 ```
 
 ## 🧩 Métodos disponibles
-| Método                         | Parámetros | Descripción                                 |
-| ------------------------------ | ---------- | ------------------------------------------- |
-| `$.kivielModal(content, size, options)` | `content`: String HTML<br>`size`: 'xs'\|'sm'\|'md'\|'lg'<br>`options`: Object con `onContentLoaded` callback | Crea un nuevo modal con contenido dinámico. Ejecuta scripts inline automáticamente. |
+
+| Método | Parámetros | Descripción |
+| ------ | ---------- | ----------- |
+| `$.kivielModal(content, options)` | `content`: String HTML<br>`options`: Object con configuración completa:<br>• `size`: 'xs'\|'sm'\|'md'\|'lg'<br>• `closeOnClickOutside`: boolean<br>• `closeOnEscape`: boolean<br>• `onContentLoaded`: function | **[Nueva sintaxis]** Crea un nuevo modal con opciones completas. Ejecuta scripts inline automáticamente. |
+| `$.kivielModal(content, size, options)` | `content`: String HTML<br>`size`: 'xs'\|'sm'\|'md'\|'lg'<br>`options`: Object opcional | **[Legacy]** Sintaxis compatible con versiones anteriores. |
 | `$.kivielModal.updateContent(id, content, callback)` | `id`: ID del modal<br>`content`: Nuevo HTML<br>`callback`: Función opcional | Actualiza el contenido de un modal existente y ejecuta scripts. |
-| `$.kivielModal.close()`        | - | Cierra el último modal abierto.             |
-| `$.kivielModal.closeById(id)`  | `id`: ID del modal | Cierra un modal específico.                 |
-| `$.kivielModal.closeAll()`     | - | Cierra todos los modales activos.           |
-| `$.kivielModal.exists()`       | - | Devuelve `true` si hay modales abiertos.    |
-| `$.kivielModal.count()`        | - | Devuelve la cantidad de modales activos.    |
+| `$.kivielModal.close()` | - | Cierra el último modal abierto. |
+| `$.kivielModal.closeById(id)` | `id`: ID del modal | Cierra un modal específico. |
+| `$.kivielModal.closeAll()` | - | Cierra todos los modales activos. |
+| `$.kivielModal.exists()` | - | Devuelve `true` si hay modales abiertos. |
+| `$.kivielModal.count()` | - | Devuelve la cantidad de modales activos. |
+| `$.kivielModal.getModalOptions(id)` | `id`: ID del modal | Devuelve las opciones de configuración de un modal específico. |
 | `$.kivielModal.getZIndexInfo()` | - | Devuelve información sobre z-index de modales activos. |
 
 ---

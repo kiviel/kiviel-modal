@@ -1,12 +1,23 @@
 (function($){
     // Array para mantener los modales activos con su información
     const activeModals = [];
-    
+
+    // Objeto para almacenar las opciones de cada modal
+    const modalOptions = {};
+
     // Z-index base más bajo para permitir que sweetalert2 y otros plugins se muestren encima
     // sweetalert2 usa 1060, así que usamos 1040 como base
     const BASE_Z_INDEX = 1040;
     const Z_INDEX_INCREMENT = 5;
     const MAX_Z_INDEX = 1055; // Límite máximo para no superar sweetalert2
+
+    // Opciones por defecto
+    const DEFAULT_OPTIONS = {
+        size: 'sm',
+        closeOnClickOutside: true,
+        closeOnEscape: false,
+        onContentLoaded: null
+    };
     
     const generateRandomString = (num) => {
         let result = '';
@@ -93,23 +104,61 @@
         });
     };
 
-    $.kivielModal = function(data, size = 'sm', options = {}){
+    /**
+     * Función principal para crear y mostrar un modal
+     * @param {string} data - Contenido HTML del modal
+     * @param {string|object} sizeOrOptions - Tamaño del modal ('xs'|'sm'|'md'|'lg') u objeto de opciones completo
+     * @param {object} legacyOptions - Opciones adicionales (solo si se usa la forma antigua con size como string)
+     * @returns {string} ID del modal creado
+     */
+    $.kivielModal = function(data, sizeOrOptions, legacyOptions){
+        let settings;
+
+        // Detectar si estamos usando la nueva sintaxis (solo 2 parámetros, segundo es objeto)
+        // o la antigua (3 parámetros, segundo es string)
+        if(typeof sizeOrOptions === 'object' && sizeOrOptions !== null){
+            // Nueva sintaxis: $.kivielModal(content, { size: 'lg', closeOnEscape: true })
+            settings = { ...DEFAULT_OPTIONS, ...sizeOrOptions };
+        } else if(typeof sizeOrOptions === 'string' || sizeOrOptions === undefined){
+            // Sintaxis antigua: $.kivielModal(content, 'lg', { onContentLoaded: fn })
+            // O sin opciones: $.kivielModal(content, 'lg')
+            settings = {
+                ...DEFAULT_OPTIONS,
+                size: sizeOrOptions || DEFAULT_OPTIONS.size,
+                ...(legacyOptions || {})
+            };
+        } else {
+            // Fallback: usar valores por defecto
+            settings = { ...DEFAULT_OPTIONS };
+        }
+
         // Crear un nuevo modal cada vez
         const modalInfo = createModal();
-        
+
+        // Guardar las opciones del modal
+        modalOptions[modalInfo.id] = settings;
+
         // Agregar el modal al body
         $('body').append(modalInfo.html);
-        
+
         // Guardar referencia del modal activo
         activeModals.push(modalInfo.id);
-        
+
         // Seleccionar el modal recién creado
         const $modalLayout = $('#' + modalInfo.id);
         const $modal = $modalLayout.find('.kiviel-modal');
         const $modalBody = $modalLayout.find('.kiviel-modal-body');
-        
+
         // Agregar clase de tamaño
-        $modal.addClass(size_class[size]);
+        $modal.addClass(size_class[settings.size]);
+
+        // Actualizar el texto del header según si ESC está habilitado
+        const $headerTitle = $modalLayout.find('.kiviel-modal-header .title span');
+        if(settings.closeOnEscape){
+            $headerTitle.text('Salir (Esc)');
+        } else {
+            $headerTitle.text('Cerrar');
+        }
 
         // Agregar contenido
         $modalBody.html(data);
@@ -118,9 +167,9 @@
         executeScripts($modalBody[0]);
 
         // Ejecutar callback si existe
-        if(typeof options.onContentLoaded === 'function'){
+        if(typeof settings.onContentLoaded === 'function'){
             try {
-                options.onContentLoaded($modalBody, modalInfo.id);
+                settings.onContentLoaded($modalBody, modalInfo.id);
             } catch(error) {
                 console.error('Kiviel Modal: Error al ejecutar onContentLoaded callback:', error);
             }
@@ -132,24 +181,27 @@
             const modalId = $(this).data('reference');
             $.kivielModal.closeById(modalId);
         });
-        
+
         // Event listener para cerrar al hacer click fuera del modal
-        $modalLayout.on('click', function(e){
-            if($(e.target).hasClass('kiviel-modal-layout')){
-                $.kivielModal.closeById(modalInfo.id);
-            }
-        });
-        
+        // Solo si la opción closeOnClickOutside está habilitada
+        if(settings.closeOnClickOutside){
+            $modalLayout.on('click', function(e){
+                if($(e.target).hasClass('kiviel-modal-layout')){
+                    $.kivielModal.closeById(modalInfo.id);
+                }
+            });
+        }
+
         // Mostrar el modal con animación
         setTimeout(function(){
             $modal.addClass('kiviel-modal-show');
         }, 50);
-        
+
         // Remover tabindex de otros modales si existen
         if($(".modal").length > 0){
             $(".modal").removeAttr("tabindex");
         }
-        
+
         // Retornar el ID del modal para referencia
         return modalInfo.id;
     }
@@ -165,21 +217,26 @@
     $.kivielModal.closeById = function(modalId){
         const $modalLayout = $('#' + modalId);
         const $modal = $modalLayout.find('.kiviel-modal');
-        
+
         // Aplicar animación de cierre
         $modal.removeClass('kiviel-modal-show').addClass('kiviel-modal-hide');
-        
+
         // Remover de la lista de modales activos
         const index = activeModals.indexOf(modalId);
         if(index > -1){
             activeModals.splice(index, 1);
         }
-        
+
+        // Limpiar las opciones guardadas del modal
+        if(modalOptions[modalId]){
+            delete modalOptions[modalId];
+        }
+
         // Restaurar tabindex si es necesario
         if(activeModals.length === 0 && $(".modal").length > 0){
             $(".modal").attr("tabindex", "-1");
         }
-        
+
         // Remover el modal del DOM después de la animación
         setTimeout(function() {
             $modalLayout.remove();
@@ -260,20 +317,28 @@
 
     // Listener global para la tecla Escape
     document.addEventListener("keydown", function(event) {
-        if (event.key !== undefined) {
-            if(event.key == "Escape" || event.key == 27){
-                if(activeModals.length > 0){
-                    event.preventDefault();
-                    $.kivielModal.close();
-                }
-            }
-        } else if (event.keyCode !== undefined) {
-            if(event.keyCode === 27){
-                if(activeModals.length > 0){
-                    event.preventDefault();
-                    $.kivielModal.close();
-                }
+        const isEscapeKey = (event.key !== undefined && (event.key === "Escape" || event.key == 27)) ||
+                           (event.keyCode !== undefined && event.keyCode === 27);
+
+        if(isEscapeKey && activeModals.length > 0){
+            // Obtener el último modal abierto
+            const lastModalId = activeModals[activeModals.length - 1];
+            const options = modalOptions[lastModalId];
+
+            // Solo cerrar si la opción closeOnEscape está habilitada
+            if(options && options.closeOnEscape){
+                event.preventDefault();
+                $.kivielModal.close();
             }
         }
     });
+
+    /**
+     * Obtiene las opciones de un modal específico
+     * @param {string} modalId - ID del modal
+     * @returns {object|null} Opciones del modal o null si no existe
+     */
+    $.kivielModal.getModalOptions = function(modalId){
+        return modalOptions[modalId] || null;
+    }
 })(jQuery);
