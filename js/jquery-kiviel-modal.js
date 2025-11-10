@@ -62,7 +62,38 @@
         'lg':'kiviel-modal-lg'
     }
 
-    $.kivielModal = function(data, size = 'sm'){
+    /**
+     * Ejecuta scripts inline que vienen en el HTML cargado dinámicamente
+     * @param {HTMLElement} container - El contenedor donde se insertó el HTML
+     */
+    const executeScripts = (container) => {
+        // Buscar todos los scripts en el contenedor
+        const scripts = container.querySelectorAll('script');
+
+        scripts.forEach((oldScript) => {
+            // Crear un nuevo script para que se ejecute
+            const newScript = document.createElement('script');
+
+            // Copiar atributos
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+
+            // Copiar contenido
+            if (oldScript.src) {
+                // Script externo
+                newScript.src = oldScript.src;
+            } else {
+                // Script inline
+                newScript.textContent = oldScript.textContent;
+            }
+
+            // Reemplazar el script antiguo con el nuevo
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    };
+
+    $.kivielModal = function(data, size = 'sm', options = {}){
         // Crear un nuevo modal cada vez
         const modalInfo = createModal();
         
@@ -79,10 +110,22 @@
         
         // Agregar clase de tamaño
         $modal.addClass(size_class[size]);
-        
+
         // Agregar contenido
         $modalBody.html(data);
-        
+
+        // Ejecutar scripts inline del contenido cargado
+        executeScripts($modalBody[0]);
+
+        // Ejecutar callback si existe
+        if(typeof options.onContentLoaded === 'function'){
+            try {
+                options.onContentLoaded($modalBody, modalInfo.id);
+            } catch(error) {
+                console.error('Kiviel Modal: Error al ejecutar onContentLoaded callback:', error);
+            }
+        }
+
         // Event listener para el botón de cerrar específico de este modal
         $modalLayout.find('.km-close').on('click', function(e){
             e.preventDefault();
@@ -149,6 +192,39 @@
         modalsToClose.forEach(function(modalId){
             $.kivielModal.closeById(modalId);
         });
+    }
+
+    /**
+     * Actualiza el contenido de un modal específico y ejecuta los scripts
+     * @param {string} modalId - ID del modal a actualizar
+     * @param {string} newData - Nuevo contenido HTML
+     * @param {function} onContentLoaded - Callback opcional después de cargar el contenido
+     */
+    $.kivielModal.updateContent = function(modalId, newData, onContentLoaded){
+        const $modalLayout = $('#' + modalId);
+        if($modalLayout.length === 0){
+            console.error('Kiviel Modal: No se encontró el modal con ID:', modalId);
+            return false;
+        }
+
+        const $modalBody = $modalLayout.find('.kiviel-modal-body');
+
+        // Actualizar contenido
+        $modalBody.html(newData);
+
+        // Ejecutar scripts inline del nuevo contenido
+        executeScripts($modalBody[0]);
+
+        // Ejecutar callback si existe
+        if(typeof onContentLoaded === 'function'){
+            try {
+                onContentLoaded($modalBody, modalId);
+            } catch(error) {
+                console.error('Kiviel Modal: Error al ejecutar onContentLoaded callback:', error);
+            }
+        }
+
+        return true;
     }
 
     $.kivielModal.onKeyClose = function(event){
