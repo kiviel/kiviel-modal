@@ -302,7 +302,6 @@
 .kiviel-modal-body table {
   width: 100%;
   overflow-x: auto;
-  display: block;
 }
 
 /* Estilos para múltiples modales superpuestos */

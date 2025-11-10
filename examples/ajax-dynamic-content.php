@@ -314,122 +314,17 @@ $.ajax({
         // Ejemplo 1: Tabla con DataTables usando script inline
         function loadContactTable() {
             // Simulamos una respuesta AJAX con HTML + script inline
-            const htmlWithScript = `
-                <div class="modal-content-wrapper">
-                    <h3>📊 Información de Contacto</h3>
-                    <p>Esta tabla se inicializa automáticamente con DataTables gracias al script inline.</p>
-
-                    <table id="contacts-table" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
-                                <th>Ciudad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Juan Pérez</td>
-                                <td>juan@example.com</td>
-                                <td>+52 555 1234</td>
-                                <td>Ciudad de México</td>
-                            </tr>
-                            <tr>
-                                <td>María González</td>
-                                <td>maria@example.com</td>
-                                <td>+52 555 5678</td>
-                                <td>Guadalajara</td>
-                            </tr>
-                            <tr>
-                                <td>Carlos Ramírez</td>
-                                <td>carlos@example.com</td>
-                                <td>+52 555 9012</td>
-                                <td>Monterrey</td>
-                            </tr>
-                            <tr>
-                                <td>Ana López</td>
-                                <td>ana@example.com</td>
-                                <td>+52 555 3456</td>
-                                <td>Puebla</td>
-                            </tr>
-                            <tr>
-                                <td>Pedro Martínez</td>
-                                <td>pedro@example.com</td>
-                                <td>+52 555 7890</td>
-                                <td>Querétaro</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-success" onclick="$.kivielModal.close()">Cerrar</button>
-                    </div>
-                </div>
-
-                <script>
-                    // ✅ Este script SE EJECUTA automáticamente
-                    $(document).ready(function() {
-                        $('#contacts-table').DataTable({
-                            language: {
-                                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
-                            },
-                            pageLength: 5,
-                            order: [[0, 'asc']]
-                        });
-
-                        console.log('✅ DataTable inicializado automáticamente desde script inline');
-                    });
-                </script>
-            `;
+            const urlhtmlWithScript = './load-contact-table.php';
 
             // Abrir el modal - el script se ejecutará automáticamente
-            $.kivielModal(htmlWithScript, 'lg');
+            $.kivielModal(urlhtmlWithScript, 'lg');
         }
 
         // Ejemplo 2: Formulario con Select2 usando callback
         function loadFormWithSelect2() {
-            const htmlContent = `
-                <div class="modal-content-wrapper">
-                    <h3>📝 Formulario con Select2</h3>
-                    <p>Este ejemplo usa el callback <code>onContentLoaded</code> para inicializar Select2.</p>
+            const urlhtmlContent = './load-with-select2.php';
 
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <label for="country">País:</label>
-                            <select id="country" class="select2" style="width: 100%;">
-                                <option value="">Seleccione un país</option>
-                                <option value="mx">México</option>
-                                <option value="ar">Argentina</option>
-                                <option value="co">Colombia</option>
-                                <option value="es">España</option>
-                                <option value="us">Estados Unidos</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="city">Ciudad:</label>
-                            <select id="city" class="select2" style="width: 100%;">
-                                <option value="">Seleccione una ciudad</option>
-                                <option value="cdmx">Ciudad de México</option>
-                                <option value="gdl">Guadalajara</option>
-                                <option value="mty">Monterrey</option>
-                                <option value="qro">Querétaro</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="name">Nombre:</label>
-                            <input type="text" id="name" placeholder="Ingrese su nombre">
-                        </div>
-
-                        <button type="button" class="btn btn-primary" onclick="submitForm()">Enviar</button>
-                        <button type="button" class="btn btn-warning" onclick="$.kivielModal.close()">Cancelar</button>
-                    </form>
-                </div>
-            `;
-
-            const modalId = $.kivielModal(htmlContent, 'md', {
+            const modalId = $.kivielModal(urlhtmlContent, 'md', {
                 onContentLoaded: function($modalBody, modalId) {
                     // Inicializar Select2 con dropdownParent correcto
                     $modalBody.find('.select2').select2({
@@ -475,137 +370,33 @@ $.ajax({
 
             // Paso 2: Simular carga AJAX (2 segundos)
             setTimeout(() => {
-                const newContent = `
-                    <div class="modal-content-wrapper">
-                        <h3>✅ Datos Cargados</h3>
-                        <p>El contenido se actualizó dinámicamente usando <code>updateContent()</code></p>
-
-                        <table id="dynamic-table" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Precio</th>
-                                    <th>Stock</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Laptop</td>
-                                    <td>$15,000</td>
-                                    <td>25</td>
-                                </tr>
-                                <tr>
-                                    <td>Mouse</td>
-                                    <td>$350</td>
-                                    <td>150</td>
-                                </tr>
-                                <tr>
-                                    <td>Teclado</td>
-                                    <td>$800</td>
-                                    <td>80</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <script>
-                            // ✅ Este script se ejecuta después de actualizar el contenido
-                            $('#dynamic-table').DataTable({
-                                language: {
-                                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
-                                },
-                                pageLength: 5
-                            });
-                            console.log('✅ Tabla actualizada e inicializada');
-                        </script>
-
-                        <div style="margin-top: 20px;">
-                            <button class="btn btn-success" onclick="$.kivielModal.close()">Cerrar</button>
-                        </div>
-                    </div>
-                `;
-
-                // Actualizar el contenido del modal
-                $.kivielModal.updateContent(modalId, newContent);
-
-                Swal.fire({
-                    icon: 'success',
-                    title: '✅ Contenido Actualizado',
-                    text: 'El modal se actualizó y los scripts se ejecutaron automáticamente',
-                    timer: 2000,
-                    showConfirmButton: false
+                $.ajax({
+                    url: './load-dynamic-content.php',
+                    method: 'GET',
+                    success: function(response) {
+                        // Paso 3: Actualizar contenido y ejecutar scripts
+                        $.kivielModal.updateContent(modalId, response, function($modalBody) {
+                            console.log('✅ Contenido dinámico cargado y scripts ejecutados');
+                        });
+                    },
+                    error: function() {
+                        $.kivielModal.updateContent(modalId, `
+                            <div class="modal-content-wrapper">
+                                <h3>❌ Error al Cargar</h3>
+                                <p>No se pudieron cargar los datos. Por favor intente nuevamente.</p>
+                                <div style="margin-top: 20px;">
+                                    <button class="btn btn-warning" onclick="$.kivielModal.close()">Cerrar</button>
+                                </div>
+                            </div>
+                        `);
+                    }
                 });
             }, 2000);
         }
 
         // Ejemplo 4: Ejemplo complejo con múltiples plugins
         function loadComplexExample() {
-            const htmlContent = `
-                <div class="modal-content-wrapper">
-                    <h3>🚀 Ejemplo Complejo</h3>
-                    <p>Múltiples plugins inicializados simultáneamente</p>
-
-                    <div class="form-group">
-                        <label for="status">Estado:</label>
-                        <select id="status" class="select2" style="width: 100%;">
-                            <option value="active">Activo</option>
-                            <option value="inactive">Inactivo</option>
-                            <option value="pending">Pendiente</option>
-                        </select>
-                    </div>
-
-                    <h4>Usuarios del Sistema</h4>
-                    <table id="users-table" class="display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Usuario</th>
-                                <th>Rol</th>
-                                <th>Email</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>admin</td>
-                                <td>Administrador</td>
-                                <td>admin@example.com</td>
-                                <td>Activo</td>
-                            </tr>
-                            <tr>
-                                <td>user1</td>
-                                <td>Usuario</td>
-                                <td>user1@example.com</td>
-                                <td>Activo</td>
-                            </tr>
-                            <tr>
-                                <td>user2</td>
-                                <td>Usuario</td>
-                                <td>user2@example.com</td>
-                                <td>Inactivo</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-primary" onclick="addUser()">Agregar Usuario</button>
-                        <button class="btn btn-warning" onclick="$.kivielModal.close()">Cerrar</button>
-                    </div>
-                </div>
-
-                <script>
-                    // Múltiples inicializaciones
-                    $(document).ready(function() {
-                        // Inicializar DataTable
-                        $('#users-table').DataTable({
-                            language: {
-                                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
-                            },
-                            pageLength: 5
-                        });
-
-                        console.log('✅ Ejemplo complejo: Todos los plugins inicializados');
-                    });
-                </script>
-            `;
+            const htmlContent = 'examples/load-complex-example.php';
 
             const modalId = $.kivielModal(htmlContent, 'lg', {
                 onContentLoaded: function($modalBody, modalId) {
