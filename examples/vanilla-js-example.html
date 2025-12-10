@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiviel Modal - Vanilla JS (Sin jQuery)</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Kiviel Modal CSS -->
+    <link rel="stylesheet" href="../css/kiviel-modal.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: #e94560;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        .badge-vanilla {
+            display: inline-block;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .demo-section {
+            margin-bottom: 50px;
+        }
+
+        .demo-section h2 {
+            color: #0f3460;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #e94560;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .demo-section h2 i {
+            color: #e94560;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .demo-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+        }
+
+        .demo-card:hover {
+            border-color: #e94560;
+            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .demo-card h3 {
+            color: #0f3460;
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        .demo-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e94560 0%, #c23a51 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-dark {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .info-box h4 {
+            margin: 0 0 10px 0;
+            color: #1565c0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box code {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 13px;
+            color: #d63384;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .code-block .keyword { color: #569cd6; }
+        .code-block .string { color: #ce9178; }
+        .code-block .function { color: #dcdcaa; }
+        .code-block .comment { color: #6a9955; }
+
+        /* Estilos para contenido dentro de los modales */
+        .modal-demo-content {
+            padding: 25px;
+        }
+
+        .modal-demo-content h3 {
+            color: #0f3460;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .modal-demo-content p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .modal-demo-content .highlight {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-form label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .modal-form input,
+        .modal-form textarea,
+        .modal-form select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-form input:focus,
+        .modal-form textarea:focus,
+        .modal-form select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .status-display {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .status-display h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .status-display pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+        }
+
+        footer a {
+            color: #e94560;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>
+        <i class="fas fa-window-restore"></i>
+        Kiviel Modal
+        <span class="badge-vanilla">Vanilla JS</span>
+    </h1>
+    <p class="subtitle">
+        Ejemplos de uso de la versión independiente de jQuery. 
+        Modales ligeros, animados y con soporte para múltiples instancias.
+    </p>
+
+    <!-- Sección: Uso Básico -->
+    <div class="demo-section">
+        <h2><i class="fas fa-play-circle"></i> Uso Básico</h2>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-info-circle"></i> API Principal</h4>
+            <p>
+                Usa <code>KivielModal.open(contenido, tamaño, opciones)</code> para abrir un modal.<br>
+                Tamaños disponibles: <code>'xs'</code>, <code>'sm'</code>, <code>'md'</code>, <code>'lg'</code>
+            </p>
+        </div>
+
+        <div class="button-grid">
+            <div class="demo-card">
+                <h3>Modal Simple</h3>
+                <p>Abre un modal con contenido HTML básico.</p>
+                <button class="btn btn-primary" onclick="openSimpleModal()">
+                    <i class="fas fa-window-maximize"></i> Abrir Modal
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Modal con Formulario</h3>
+                <p>Modal conteniendo un formulario interactivo.</p>
+                <button class="btn btn-success" onclick="openFormModal()">
+                    <i class="fas fa-edit"></i> Abrir Formulario
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Modal con Callback</h3>
+                <p>Ejecuta código cuando el contenido se carga.</p>
+                <button class="btn btn-info" onclick="openCallbackModal()">
+                    <i class="fas fa-code"></i> Con Callback
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Tamaños -->
+    <div class="demo-section">
+        <h2><i class="fas fa-expand-arrows-alt"></i> Tamaños de Modal</h2>
+        
+        <div class="button-grid">
+            <div class="demo-card">
+                <h3>Extra Pequeño (xs)</h3>
+                <p>Máximo 400px de ancho. Ideal para alertas rápidas.</p>
+                <button class="btn btn-dark" onclick="openSizeModal('xs')">
+                    <i class="fas fa-compress"></i> Tamaño XS
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Pequeño (sm)</h3>
+                <p>Máximo 600px de ancho. Tamaño predeterminado.</p>
+                <button class="btn btn-primary" onclick="openSizeModal('sm')">
+                    <i class="fas fa-window-minimize"></i> Tamaño SM
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Mediano (md)</h3>
+                <p>Máximo 900px de ancho. Para formularios amplios.</p>
+                <button class="btn btn-warning" onclick="openSizeModal('md')">
+                    <i class="fas fa-window-restore"></i> Tamaño MD
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Grande (lg)</h3>
+                <p>Máximo 1200px de ancho. Para tablas y contenido extenso.</p>
+                <button class="btn btn-danger" onclick="openSizeModal('lg')">
+                    <i class="fas fa-window-maximize"></i> Tamaño LG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Múltiples Modales -->
+    <div class="demo-section">
+        <h2><i class="fas fa-layer-group"></i> Múltiples Modales</h2>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-lightbulb"></i> Modales Apilables</h4>
+            <p>
+                Kiviel Modal soporta múltiples modales abiertos simultáneamente. 
+                Cada nuevo modal se posiciona encima del anterior con z-index incrementado.
+                Presiona <kbd>ESC</kbd> para cerrar el modal superior.
+            </p>
+        </div>
+
+        <div class="button-grid">
+            <div class="demo-card">
+                <h3>Modal Anidado</h3>
+                <p>Abre un modal que puede abrir otro modal encima.</p>
+                <button class="btn btn-danger" onclick="openNestedModal()">
+                    <i class="fas fa-clone"></i> Modal con Anidación
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Cerrar Todos</h3>
+                <p>Cierra todos los modales abiertos de una vez.</p>
+                <button class="btn btn-dark" onclick="KivielModal.closeAll()">
+                    <i class="fas fa-times-circle"></i> Cerrar Todos
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Ver Estado</h3>
+                <p>Muestra información sobre los modales activos.</p>
+                <button class="btn btn-info" onclick="showModalStatus()">
+                    <i class="fas fa-chart-bar"></i> Ver Estado
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Actualizar Contenido -->
+    <div class="demo-section">
+        <h2><i class="fas fa-sync-alt"></i> Actualización Dinámica</h2>
+        
+        <div class="button-grid">
+            <div class="demo-card">
+                <h3>Actualizar Contenido</h3>
+                <p>Abre un modal y actualiza su contenido dinámicamente.</p>
+                <button class="btn btn-success" onclick="openUpdatableModal()">
+                    <i class="fas fa-exchange-alt"></i> Modal Actualizable
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h3>Contenido AJAX</h3>
+                <p>Carga contenido desde el servidor vía fetch().</p>
+                <button class="btn btn-primary" onclick="openAjaxModal()">
+                    <i class="fas fa-cloud-download-alt"></i> Cargar AJAX
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Scripts Embebidos -->
+    <div class="demo-section">
+        <h2><i class="fas fa-terminal"></i> Ejecución de Scripts</h2>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-magic"></i> Scripts Automáticos</h4>
+            <p>
+                Kiviel Modal ejecuta automáticamente los scripts <code>&lt;script&gt;</code> 
+                incluidos en el contenido del modal. Esto es crucial para contenido AJAX 
+                que necesita inicializar plugins o ejecutar lógica JavaScript.
+            </p>
+        </div>
+
+        <div class="button-grid">
+            <div class="demo-card">
+                <h3>Modal con Script Inline</h3>
+                <p>El script dentro del modal se ejecuta automáticamente.</p>
+                <button class="btn btn-warning" onclick="openScriptModal()">
+                    <i class="fas fa-play"></i> Ejecutar Demo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Código de Ejemplo -->
+    <div class="demo-section">
+        <h2><i class="fas fa-code"></i> Ejemplos de Código</h2>
+        
+        <div class="code-block">
+<span class="comment">// Abrir modal simple</span>
+<span class="keyword">const</span> modalId = <span class="function">KivielModal.open</span>(<span class="string">'&lt;p&gt;Hola Mundo&lt;/p&gt;'</span>, <span class="string">'sm'</span>);
+
+<span class="comment">// Abrir modal con callback</span>
+<span class="function">KivielModal.open</span>(contenido, <span class="string">'md'</span>, {
+    <span class="function">onContentLoaded</span>: <span class="keyword">function</span>(modalBody, id) {
+        console.log(<span class="string">'Modal cargado:'</span>, id);
+    }
+});
+
+<span class="comment">// Actualizar contenido de un modal existente</span>
+<span class="function">KivielModal.updateContent</span>(modalId, <span class="string">'&lt;p&gt;Nuevo contenido&lt;/p&gt;'</span>);
+
+<span class="comment">// Cerrar el último modal abierto</span>
+<span class="function">KivielModal.close</span>();
+
+<span class="comment">// Cerrar un modal específico por ID</span>
+<span class="function">KivielModal.closeById</span>(modalId);
+
+<span class="comment">// Cerrar todos los modales</span>
+<span class="function">KivielModal.closeAll</span>();
+
+<span class="comment">// Verificar si hay modales abiertos</span>
+<span class="keyword">if</span> (<span class="function">KivielModal.exists</span>()) { ... }
+
+<span class="comment">// Obtener cantidad de modales activos</span>
+<span class="keyword">const</span> count = <span class="function">KivielModal.count</span>();
+
+<span class="comment">// Obtener información de z-index</span>
+<span class="keyword">const</span> info = <span class="function">KivielModal.getZIndexInfo</span>();
+        </div>
+    </div>
+
+    <!-- Estado Actual -->
+    <div class="status-display">
+        <h4><i class="fas fa-info-circle"></i> Estado Actual de Modales</h4>
+        <pre id="statusOutput">Haz clic en "Ver Estado" para actualizar</pre>
+    </div>
+
+    <footer>
+        <p>
+            <strong>Kiviel Modal</strong> - Versión Vanilla JS &copy; 2025<br>
+            <a href="https://github.com/kiviel/kiviel-modal" target="_blank">
+                <i class="fab fa-github"></i> Ver en GitHub
+            </a>
+        </p>
+    </footer>
+</div>
+
+<!-- Kiviel Modal Vanilla JS (SIN jQuery) -->
+<script src="../js/kiviel-modal-vanilla.js"></script>
+
+<script>
+    // ============================================
+    // FUNCIONES DE DEMOSTRACIÓN
+    // ============================================
+
+    // Modal Simple
+    function openSimpleModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-check-circle" style="color: #4caf50;"></i> ¡Modal Abierto!</h3>
+                <p>Este es un modal simple creado con <strong>Kiviel Modal Vanilla JS</strong>.</p>
+                <p>No requiere jQuery ni ninguna otra dependencia. Solo JavaScript puro.</p>
+                <div class="highlight">
+                    <strong>💡 Tip:</strong> Puedes cerrar este modal haciendo clic fuera de él, 
+                    presionando <kbd>ESC</kbd> o usando el botón de cerrar.
+                </div>
+            </div>
+        `;
+        KivielModal.open(content, 'sm');
+    }
+
+    // Modal con Formulario
+    function openFormModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-user-plus" style="color: #667eea;"></i> Formulario de Registro</h3>
+                <form class="modal-form" onsubmit="handleFormSubmit(event)">
+                    <div>
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" placeholder="Escribe tu nombre" required>
+                    </div>
+                    <div>
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    <div>
+                        <label for="plan">Plan de Suscripción</label>
+                        <select id="plan">
+                            <option value="free">Gratuito</option>
+                            <option value="basic">Básico - $9.99/mes</option>
+                            <option value="pro">Profesional - $29.99/mes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="mensaje">Comentarios</label>
+                        <textarea id="mensaje" rows="3" placeholder="Escribe un comentario opcional..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane"></i> Enviar Registro
+                    </button>
+                </form>
+            </div>
+        `;
+        KivielModal.open(content, 'md');
+    }
+
+    // Manejar envío de formulario
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const plan = document.getElementById('plan').value;
+        
+        KivielModal.close();
+        
+        setTimeout(() => {
+            KivielModal.open(`
+                <div class="modal-demo-content">
+                    <h3><i class="fas fa-check-circle" style="color: #4caf50;"></i> ¡Registro Exitoso!</h3>
+                    <p><strong>Nombre:</strong> ${nombre}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Plan:</strong> ${plan}</p>
+                </div>
+            `, 'xs');
+        }, 350);
+    }
+
+    // Modal con Callback
+    function openCallbackModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-code" style="color: #ff9800;"></i> Modal con Callback</h3>
+                <p>Este modal ejecutó un callback <code>onContentLoaded</code> al abrirse.</p>
+                <p id="callback-timestamp">Cargando timestamp...</p>
+            </div>
+        `;
+        
+        KivielModal.open(content, 'sm', {
+            onContentLoaded: function(modalBody, modalId) {
+                // Este código se ejecuta cuando el modal está listo
+                const timestamp = new Date().toLocaleTimeString();
+                const el = modalBody.querySelector('#callback-timestamp');
+                if (el) {
+                    el.innerHTML = `<strong>⏰ Callback ejecutado a las:</strong> ${timestamp}`;
+                    el.style.background = '#e8f5e9';
+                    el.style.padding = '10px';
+                    el.style.borderRadius = '5px';
+                }
+                console.log('Modal cargado con ID:', modalId);
+            }
+        });
+    }
+
+    // Modal por Tamaño
+    function openSizeModal(size) {
+        const sizeNames = {
+            'xs': 'Extra Pequeño (400px)',
+            'sm': 'Pequeño (600px)',
+            'md': 'Mediano (900px)',
+            'lg': 'Grande (1200px)'
+        };
+        
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-ruler-combined" style="color: #9c27b0;"></i> Tamaño: ${sizeNames[size]}</h3>
+                <p>Este modal usa el tamaño <code>'${size}'</code>.</p>
+                <p>Los tamaños disponibles son:</p>
+                <ul>
+                    <li><code>'xs'</code> - Extra pequeño (max-width: 400px)</li>
+                    <li><code>'sm'</code> - Pequeño (max-width: 600px) - Por defecto</li>
+                    <li><code>'md'</code> - Mediano (max-width: 900px)</li>
+                    <li><code>'lg'</code> - Grande (max-width: 1200px)</li>
+                </ul>
+            </div>
+        `;
+        KivielModal.open(content, size);
+    }
+
+    // Modal Anidado
+    function openNestedModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-layer-group" style="color: #e91e63;"></i> Modal Principal</h3>
+                <p>Este es el primer modal. Puedes abrir otro modal encima de este.</p>
+                <p><strong>Modales activos:</strong> <span id="modal-count-1">${KivielModal.count() + 1}</span></p>
+                <button class="btn btn-warning" onclick="openSecondModal()" style="margin-top: 15px;">
+                    <i class="fas fa-plus"></i> Abrir Segundo Modal
+                </button>
+            </div>
+        `;
+        KivielModal.open(content, 'sm');
+    }
+
+    function openSecondModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-clone" style="color: #673ab7;"></i> Segundo Modal</h3>
+                <p>¡Este modal está encima del primero!</p>
+                <p><strong>Modales activos:</strong> ${KivielModal.count() + 1}</p>
+                <p>Presiona <kbd>ESC</kbd> para cerrar solo este modal.</p>
+                <button class="btn btn-info" onclick="openThirdModal()" style="margin-top: 15px;">
+                    <i class="fas fa-plus"></i> Abrir Tercer Modal
+                </button>
+            </div>
+        `;
+        KivielModal.open(content, 'xs');
+    }
+
+    function openThirdModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-star" style="color: #ffc107;"></i> ¡Tercer Modal!</h3>
+                <p><strong>Modales activos:</strong> ${KivielModal.count() + 1}</p>
+                <p>Has alcanzado el límite recomendado de modales anidados.</p>
+                <div class="highlight">
+                    Cada modal tiene un z-index incrementado para asegurar 
+                    la correcta superposición visual.
+                </div>
+            </div>
+        `;
+        KivielModal.open(content, 'xs');
+    }
+
+    // Mostrar Estado
+    function showModalStatus() {
+        const info = KivielModal.getZIndexInfo();
+        const output = document.getElementById('statusOutput');
+        output.textContent = JSON.stringify(info, null, 2);
+    }
+
+    // Modal Actualizable
+    let updatableModalId = null;
+    let updateCount = 0;
+
+    function openUpdatableModal() {
+        updateCount = 0;
+        const content = getUpdatableContent();
+        updatableModalId = KivielModal.open(content, 'sm');
+    }
+
+    function getUpdatableContent() {
+        updateCount++;
+        return `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-sync-alt" style="color: #00bcd4;"></i> Contenido Dinámico</h3>
+                <p><strong>Actualización #${updateCount}</strong></p>
+                <p>Timestamp: ${new Date().toLocaleTimeString()}</p>
+                <p>Este contenido puede ser actualizado sin cerrar el modal.</p>
+                <button class="btn btn-success" onclick="updateModalContent()" style="margin-top: 15px;">
+                    <i class="fas fa-refresh"></i> Actualizar Contenido
+                </button>
+            </div>
+        `;
+    }
+
+    function updateModalContent() {
+        if (updatableModalId) {
+            KivielModal.updateContent(updatableModalId, getUpdatableContent());
+        }
+    }
+
+    // Modal AJAX
+    function openAjaxModal() {
+        // Primero abrimos con un loader
+        const loaderId = KivielModal.open(`
+            <div class="modal-demo-content" style="text-align: center; padding: 40px;">
+                <i class="fas fa-spinner fa-spin fa-3x" style="color: #667eea;"></i>
+                <p style="margin-top: 20px;">Cargando contenido...</p>
+            </div>
+        `, 'sm');
+
+        // Simulamos una petición AJAX (en producción usarías fetch real)
+        setTimeout(() => {
+            // Simular respuesta del servidor
+            const ajaxContent = `
+                <div class="modal-demo-content">
+                    <h3><i class="fas fa-cloud-download-alt" style="color: #4caf50;"></i> Contenido Cargado</h3>
+                    <p>Este contenido fue "cargado" desde el servidor.</p>
+                    <p><strong>Datos simulados:</strong></p>
+                    <ul>
+                        <li>Usuario: admin@ejemplo.com</li>
+                        <li>Último acceso: ${new Date().toLocaleDateString()}</li>
+                        <li>Plan: Profesional</li>
+                    </ul>
+                    <div class="highlight">
+                        En producción, usarías <code>fetch()</code> para obtener 
+                        contenido real desde tu servidor.
+                    </div>
+                </div>
+            `;
+            KivielModal.updateContent(loaderId, ajaxContent);
+        }, 1500);
+    }
+
+    // Modal con Script Embebido
+    function openScriptModal() {
+        const content = `
+            <div class="modal-demo-content">
+                <h3><i class="fas fa-terminal" style="color: #ff5722;"></i> Script Ejecutado</h3>
+                <p id="script-output">Esperando ejecución del script...</p>
+                <div id="script-animation" style="margin-top: 15px;"></div>
+            </div>
+            <script>
+                // Este script se ejecuta automáticamente cuando el modal se abre
+                (function() {
+                    const output = document.getElementById('script-output');
+                    const animation = document.getElementById('script-animation');
+                    
+                    if (output) {
+                        output.innerHTML = '<strong style="color: #4caf50;">✅ ¡Script ejecutado correctamente!</strong>';
+                        output.style.background = '#e8f5e9';
+                        output.style.padding = '15px';
+                        output.style.borderRadius = '8px';
+                    }
+                    
+                    // Crear una animación simple
+                    if (animation) {
+                        let count = 0;
+                        const colors = ['#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'];
+                        const interval = setInterval(() => {
+                            const box = document.createElement('span');
+                            box.style.display = 'inline-block';
+                            box.style.width = '20px';
+                            box.style.height = '20px';
+                            box.style.margin = '2px';
+                            box.style.borderRadius = '4px';
+                            box.style.background = colors[count % colors.length];
+                            box.style.animation = 'fadeIn 0.3s ease';
+                            animation.appendChild(box);
+                            
+                            count++;
+                            if (count >= 10) clearInterval(interval);
+                        }, 200);
+                    }
+                    
+                    console.log('🎉 Script del modal ejecutado exitosamente');
+                })();
+            <\/script>
+        `;
+        KivielModal.open(content, 'sm');
+    }
+
+    // Actualizar estado periódicamente cuando hay modales
+    setInterval(() => {
+        if (KivielModal.exists()) {
+            showModalStatus();
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>

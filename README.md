@@ -1,8 +1,19 @@
-# 🧩 jQuery Kiviel Modal
+# 🧩 Kiviel Modal
 
-**jQuery Kiviel Modal** es un plugin ligero y versátil, diseñado para crear y manejar múltiples modales personalizados de manera simultánea y controlada, sin depender del sistema de modales nativo de Bootstrap ni afectar la interacción con otros plugins como **SweetAlert2** o **Toastr**.
+**Kiviel Modal** es un plugin ligero y versátil, diseñado para crear y manejar múltiples modales personalizados de manera simultánea y controlada, sin depender del sistema de modales nativo de Bootstrap ni afectar la interacción con otros plugins como **SweetAlert2** o **Toastr**.
 
 Su estructura está optimizada para usarse en entornos donde se requieren varios niveles de interacción (formularios, confirmaciones, vistas dinámicas, etc.) sin comprometer la experiencia del usuario ni el control visual de las capas.
+
+## 📢 ¡Nuevo! Versión Vanilla JS
+
+A partir de la versión **2.0**, Kiviel Modal está disponible en **dos versiones**:
+
+| Versión | Archivo | Dependencias |
+|---------|---------|--------------|
+| **Vanilla JS** (Recomendada) | `kiviel-modal-vanilla.js` | ✅ Sin dependencias |
+| **jQuery** (Legacy) | `jquery-kiviel-modal.js` | jQuery 3.5+ |
+
+> 💡 **Recomendación:** Para nuevos proyectos, usa la versión **Vanilla JS**. Es más ligera, moderna y no requiere jQuery.
 
 ---
 
@@ -21,36 +32,208 @@ Su estructura está optimizada para usarse en entornos donde se requieren varios
 - 🖱️ **Cierre al hacer clic fuera del modal**.
 - 🧮 **Funciones globales utilitarias**: abrir, cerrar, contar, validar existencia.
 - ⚙️ **Totalmente independiente**, sin modificar `tabindex` ni interferir con otros modales del sistema.
+- 🆕 **Versión Vanilla JS**: Sin dependencias, JavaScript puro.
 
 ---
 
 ## 📦 Requerimientos
 
+### Versión Vanilla JS (Recomendada)
+| Recurso | Requerimiento |
+|---------|---------------|
+| **JavaScript** | ES6+ (Navegadores modernos) |
+| **Font Awesome (opcional)** | Para íconos de cabecera |
+| **CSS personalizado** | Incluir `kiviel-modal.css` |
+
+### Versión jQuery (Legacy)
 | Recurso | Versión mínima |
 |----------|----------------|
 | **jQuery** | 3.5+ |
 | **Font Awesome (opcional)** | Para íconos de cabecera |
-| **CSS personalizado** | Se recomienda incluir estilos `.kiviel-modal` |
+| **CSS personalizado** | Incluir `kiviel-modal.css` |
 
 ---
 
 ## 🧰 Instalación
 
-### Opción 1: Incluir directamente en tu proyecto
+### Versión Vanilla JS (Sin dependencias)
+
+```html
+<!-- Solo necesitas estos dos archivos -->
+<link rel="stylesheet" href="css/kiviel-modal.css">
+<script src="js/kiviel-modal-vanilla.js"></script>
+```
+
+### Versión jQuery
 
 ```html
 <script src="jquery.min.js"></script>
-<script src="jquery-kiviel-modal.js"></script>
-<link rel="stylesheet" href="kiviel-modal.css">
+<script src="js/jquery-kiviel-modal.js"></script>
+<link rel="stylesheet" href="css/kiviel-modal.css">
 ```
 
-### Opción 2: Usando un importador o bundler (Webpack, Vite, etc.)
+### Usando un importador o bundler (Webpack, Vite, etc.)
 ```Javascript
+// Vanilla JS
+import './kiviel-modal-vanilla.js';
+import './kiviel-modal.css';
+
+// O con jQuery
 import './jquery-kiviel-modal.js';
 import './kiviel-modal.css';
 ```
 
-## 💻 Uso básico
+---
+
+# 🍦 Versión Vanilla JS (Recomendada)
+
+La versión Vanilla JS es la forma **moderna y ligera** de usar Kiviel Modal. No requiere jQuery ni ninguna otra dependencia.
+
+## 💻 Uso Básico - Vanilla JS
+
+### Abrir un Modal
+```javascript
+// Forma básica
+const modalId = KivielModal.open('<p>Contenido del modal</p>');
+
+// Con tamaño específico
+const modalId = KivielModal.open('<p>Contenido del modal</p>', 'lg');
+
+// Con opciones completas
+const modalId = KivielModal.open('<p>Contenido del modal</p>', 'md', {
+    onContentLoaded: function(modalBody, modalId) {
+        console.log('Modal cargado:', modalId);
+        // modalBody es el elemento DOM nativo
+    }
+});
+```
+
+### Función Shorthand
+```javascript
+// También puedes usar KivielModal directamente como función
+const modalId = KivielModal('<p>Hola Mundo</p>', 'sm');
+```
+
+### Cerrar Modales
+```javascript
+// Cerrar el último modal abierto
+KivielModal.close();
+
+// Cerrar un modal específico por ID
+KivielModal.closeById(modalId);
+
+// Cerrar todos los modales
+KivielModal.closeAll();
+```
+
+### Actualizar Contenido
+```javascript
+// Actualizar el contenido de un modal existente
+KivielModal.updateContent(modalId, '<p>Nuevo contenido</p>', function(modalBody, modalId) {
+    // Callback opcional después de actualizar
+    console.log('Contenido actualizado');
+});
+```
+
+### Utilidades
+```javascript
+// Verificar si hay modales abiertos
+if (KivielModal.exists()) {
+    console.log('Hay modales abiertos');
+}
+
+// Contar modales activos
+console.log('Modales abiertos:', KivielModal.count());
+
+// Obtener información de z-index
+const info = KivielModal.getZIndexInfo();
+console.log(info);
+// {
+//   baseZIndex: 1040,
+//   increment: 5,
+//   maxZIndex: 1055,
+//   currentModalsCount: 2,
+//   nextZIndex: 1050,
+//   activeModals: [{ id: 'kiviel-modal-abc123', zIndex: '1040' }, ...]
+// }
+```
+
+## 🔄 AJAX con Vanilla JS
+
+```javascript
+// Cargar contenido dinámico con fetch()
+fetch('mi-contenido.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'id=123'
+})
+.then(response => response.text())
+.then(html => {
+    // Abrir modal con el contenido
+    // ✅ Los scripts inline se ejecutan automáticamente
+    KivielModal.open(html, 'lg', {
+        onContentLoaded: function(modalBody, modalId) {
+            // Inicializar plugins adicionales si es necesario
+            console.log('Contenido AJAX cargado');
+        }
+    });
+});
+```
+
+## 🔌 Compatibilidad con jQuery
+
+Si tu proyecto ya usa jQuery, la versión Vanilla JS **registra automáticamente** el plugin en jQuery para mantener compatibilidad con código existente:
+
+```javascript
+// Ambas sintaxis funcionan si jQuery está presente:
+
+// Vanilla JS (siempre disponible)
+KivielModal.open('<p>Hola</p>', 'md');
+
+// jQuery (disponible si jQuery existe)
+$.kivielModal('<p>Hola</p>', 'md');
+$.kivielModal.close();
+$.kivielModal.closeAll();
+// etc.
+```
+
+---
+
+## 🧩 API Completa - Vanilla JS
+
+| Método | Parámetros | Descripción |
+|--------|------------|-------------|
+| `KivielModal.open(content, size, options)` | `content`: String HTML o HTMLElement<br>`size`: 'xs'\|'sm'\|'md'\|'lg' (default: 'sm')<br>`options`: { onContentLoaded: function } | Abre un nuevo modal y retorna su ID |
+| `KivielModal.close()` | - | Cierra el último modal abierto |
+| `KivielModal.closeById(id)` | `id`: ID del modal | Cierra un modal específico |
+| `KivielModal.closeAll()` | - | Cierra todos los modales activos |
+| `KivielModal.updateContent(id, content, callback)` | `id`: ID del modal<br>`content`: Nuevo HTML<br>`callback`: function(modalBody, modalId) | Actualiza contenido y ejecuta scripts |
+| `KivielModal.exists()` | - | Retorna `true` si hay modales abiertos |
+| `KivielModal.count()` | - | Retorna cantidad de modales activos |
+| `KivielModal.getZIndexInfo()` | - | Retorna objeto con información de z-index |
+
+---
+
+## 🎯 Ventajas de la Versión Vanilla JS
+
+| Característica | Vanilla JS | jQuery |
+|----------------|------------|--------|
+| **Tamaño** | ~4KB | ~6KB + jQuery (~90KB) |
+| **Dependencias** | ✅ Ninguna | ❌ Requiere jQuery |
+| **Rendimiento** | ⚡ Más rápido | Normal |
+| **Compatibilidad** | ES6+ | jQuery 3.5+ |
+| **Moderno** | ✅ Sí | Legacy |
+| **Ejecución de scripts** | ✅ Automática | ✅ Automática |
+| **Múltiples modales** | ✅ Sí | ✅ Sí |
+| **Callbacks** | ✅ DOM nativo | ✅ jQuery objects |
+
+---
+
+# 📚 Versión jQuery (Legacy)
+
+> ⚠️ **Nota:** Para nuevos proyectos, se recomienda usar la [versión Vanilla JS](#-versión-vanilla-js-recomendada).
+
+## 💻 Uso básico - jQuery
 
 ### Sintaxis Simple
 ```Javascript
@@ -392,14 +575,52 @@ $(function(){
   - Bootstrap (v4 y v5)
   - AdminLTE
   - Cualquier entorno basado en jQuery
-- ❌ No requiere Bootstrap ni dependencias externas.
+  - Navegadores modernos (Chrome, Firefox, Safari, Edge)
+- ❌ No requiere Bootstrap ni dependencias externas (versión Vanilla JS).
 
-🧑‍💻 Autor y Créditos
+---
 
-Creado y mantenido por Kiviel (Tecniviel)
+## 📁 Estructura de Archivos
+
+```
+kiviel-modal/
+├── css/
+│   └── kiviel-modal.css          # Estilos del modal
+├── js/
+│   ├── kiviel-modal-vanilla.js   # ✅ Versión sin dependencias (Recomendada)
+│   └── jquery-kiviel-modal.js    # Versión jQuery (Legacy)
+├── examples/
+│   ├── vanilla-js-example.html   # Demo completa Vanilla JS
+│   ├── configuracion-opciones.html
+│   └── ...
+└── README.md
+```
+
+---
+
+## 🧑‍💻 Autor y Créditos
+
+Creado y mantenido por **Kiviel (Tecniviel)**  
 📧 Contacto: [tecniviel.com](https://tecniviel.com)
 
->Este plugin forma parte del ecosistema de herramientas internas desarrolladas por Kiviel, adaptadas ara integrarse en sistemas empresariales, paneles administrativos y proyectos web modernos que requieren interfaces ligeras y altamente personalizables.
+> Este plugin forma parte del ecosistema de herramientas internas desarrolladas por Kiviel, adaptadas para integrarse en sistemas empresariales, paneles administrativos y proyectos web modernos que requieren interfaces ligeras y altamente personalizables.
+
+---
+
+## 📝 Changelog
+
+### v2.0.0 (2025)
+- 🆕 **Nueva versión Vanilla JS** - Sin dependencias, JavaScript puro
+- ⚡ Mejor rendimiento y menor tamaño
+- 🔧 API unificada entre ambas versiones
+- 📚 Nuevos ejemplos y documentación
+- 🔄 Compatibilidad automática con jQuery si está presente
+
+### v1.x
+- Versión inicial basada en jQuery
+- Soporte para múltiples modales
+- Ejecución automática de scripts
+- Sistema de callbacks
 
 ---
 
